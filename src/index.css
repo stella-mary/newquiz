@@ -108,9 +108,13 @@ button {
 	background-color: #ff3333;
 }
 
-button:hover {
-	background-color: #6d0a56;
+button:hover, button:active {
+	background-color : #6d0a56;
 }
+
+
+
+
 
 button:focus {
 	outline: none;
@@ -134,4 +138,5 @@ button svg {
 	width: 100%;
 	justify-content: space-between;
 	margin-top: 15px;
-  }
+}
+

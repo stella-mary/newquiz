@@ -1,11 +1,18 @@
 import React, { useState } from 'react'
 
+
 export default function App() {
 
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [quizFinished, setQuizFinished] = useState(false)
-  const [score, setScore] = useState(0)
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [clicked, setClicked] = useState(false);
   const [showScore, setShowScore] = useState(false);
+
+
+  // const [currentIndex, setCurrentIndex] = useState(0)
+  // const [quizFinished, setQuizFinished] = useState(false)
+  // const [score, setScore] = useState(0)
+  // const [showScore, setShowScore] = useState(false);
 
 
   const questions = [
@@ -54,82 +61,38 @@ export default function App() {
         { answerText: 'RMI', isCorrect: false },
       ],
     },
-    {
-      questionText: 'In the JavaScript, which one of the following is not considered as an error:',
-      answerOptions: [
-        { answerText: 'Syntax error', isCorrect: false },
-        { answerText: 'Division by zero', isCorrect: true },
-        { answerText: 'Missing of semicolons', isCorrect: false },
-        { answerText: 'Missing of Bracket', isCorrect: false },
-      ],
-    },
-    {
-      questionText: 'Which of the following number object function returns the value of the number?',
-      answerOptions: [
-        { answerText: 'toString()', isCorrect: false },
-        { answerText: 'toLocaleString()', isCorrect: false },
-        { answerText: 'valueOf()', isCorrect: true },
-        { answerText: 'toPrecision()', isCorrect: false },
-      ],
-    },
-    {
-      questionText: 'Which of the following function of the String object returns the character in the string starting at the specified position via the specified number of characters?',
-      answerOptions: [
-        { answerText: 'slice()', isCorrect: false },
-        { answerText: 'split()', isCorrect: false },
-        { answerText: 'search()', isCorrect: false },
-        { answerText: 'substr()', isCorrect: true },
-      ],
-    },
-    {
-      questionText: ' In JavaScript the x===y statement implies that:',
-      answerOptions: [
-        { answerText: 'Both are equal in the value and data type', isCorrect: true },
-        { answerText: 'Both x and y are equal in value, type and reference address as well', isCorrect: false },
-        { answerText: 'Both are x and y are equal in value only', isCorrect: false },
-        { answerText: 'Both are not same at all', isCorrect: false },
-      ],
-    },
-    {
-      questionText: 'What are the different alternatives of == and != in JavaScript?',
-      answerOptions: [
-        { answerText: 'It uses bitwise checking', isCorrect: false },
-        { answerText: 'It uses equals() and notequals() instead', isCorrect: true },
-        { answerText: 'It uses === and !== instead', isCorrect: false },
-        { answerText: 'It uses equalto()', isCorrect: false },
-      ],
-    },
   ]
 
   const handleAnswerClick = (isCorrect) => {
     if (isCorrect) {
       setScore(score + 1);
     }
-    setQuizFinished(true);
+    setClicked(true);
   };
 
   const restart = () => {
 
     setScore(0)
-    setCurrentIndex(0)
-    setQuizFinished(0)
+    setCurrentQuestion(0)
+    setClicked(0)
+    setShowScore(0)
 
   }
 
   const backQuestion = () => {
 
     if (
-      questions[currentIndex].answer === handleAnswerClick.answerText
+      questions[currentQuestion].answer === handleAnswerClick.answerText
     ) {
       setScore(score - 1)
-    } setCurrentIndex(currentIndex - 1)
+    } setCurrentQuestion(currentQuestion - 1)
   }
 
 
   const nextQuestion = () => {
-    setQuizFinished(false)
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex(currentIndex + 1)
+    setClicked(false)
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1)
     } else {
       setShowScore(true);
     }
@@ -144,37 +107,39 @@ export default function App() {
             <h1>Final Results</h1>
             <h2>{score} out of {questions.length} correct - ({(score / questions.length) * 100}%)
             </h2>
-            <button onClick={() => restart()}>Restart</button>
+            <button onClick={(restart)}>Restart</button>
           </div>
         ) : (
           <>
             <div className="question-section">
               <div className="question-count">
-                <span>Question {currentIndex + 1}</span>/{questions.length}
+                <span>Question {currentQuestion + 1}</span>/{questions.length}
               </div>
 
               <div className="question-text">
-                {questions[currentIndex].questionText}
+                {questions[currentQuestion].questionText}
               </div>
             </div>
 
             <div className="answer-section">
-              {questions[currentIndex].answerOptions.map((answer) => {
+              {questions[currentQuestion].answerOptions.map((answer) => {
 
                 return (
+
                   <button
-                    className={`button ${quizFinished && handleAnswerClick.isCorrect ? "correct" : "next"}`}
-                    disabled={quizFinished}
+                    className={`answer ${clicked && handleAnswerClick.isCorrect ? 'correct' : ''}`}
+                    disabled={clicked}
                     key={answer.answerText}
-                    onClick={() => handleAnswerClick()}>
+                    onClick={() => handleAnswerClick(answer.isCorrect)}>
                     {answer.answerText}
                   </button>
+
                 )
               })}
               <div className="controls">
-                {(currentIndex === 0) ? (<div></div>) : (<div><button onClick={backQuestion}>Back</button></div>)}
-
-                <button onClick={nextQuestion} disabled={!quizFinished}>Next</button>
+                {(currentQuestion === 0) ? (<div></div>) : (<div><button onClick={backQuestion}>Back</button></div>)}
+                {(currentQuestion === questions.length - 1) ? (<button onClick={nextQuestion} disabled={!clicked}>Finish</button>) : (<button onClick={nextQuestion}>Next</button>)}
+                {/* <button onClick={nextQuestion} disabled={!quizFinished}>Next</button> */}
               </div>
             </div>
           </>
